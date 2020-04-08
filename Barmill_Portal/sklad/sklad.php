@@ -127,7 +127,7 @@ function CreateTable($stmt){
                     <td>
                         <img class=\"img_mat\" src=\"sklad/img/",$row['ozm'],".jpg\" onerror=\"this.onerror=null;this.src='img/error_pictures/noImg.jpg';\">
                         
-                        <button onclick=\"window.open(\"/Barmill_Portal/index.php?page=materialMore.php\");\" >Подробно..</button>
+                        <input type=\"button\" onclick=\"window.open(\"/Barmill_Portal/index.php?page=materialMore.php\" value=\"Подробно\"/>
                     </td>
                     <td colspan=3>
                         <div class=\"chartWrapper\">
@@ -137,8 +137,7 @@ function CreateTable($stmt){
                             <canvas id=\"myChartAxis\" height=\"200\" width=\"0\"></canvas>
                         </div>
                     </td >
-                    <td id=\"matInfo\" class=\"notVisibleElements\">",
-                        SelectMatVariables($row['name_mat']),"
+                    <td id=\"matInfo\" class=\"notVisibleElements\">
                     </td>
                 </tr>
         ";
@@ -149,9 +148,17 @@ function CreateTable($stmt){
         </div>";
 }
     
-    function ClickMore($name){
+function ClickMore($name){
         echo $name;
     }
+    
+//При нажатии на любой ряд материала
+$selectRow = $_POST['selectRow'];//Подтверждение нажатия на ряд материала
+$nameMat= $_POST['selMatName'];//Имя нажатого материала
+if($selectRow =="sel"){
+    SelectMatVariables($nameMat);//Вызов функции для запроса материала по выбранному имени материала
+}
+    
 $matDateArr = array();
 $spisanieDobavlenieArr = array();
 $matQtyArr = array();
@@ -240,16 +247,15 @@ function SelectMatVariables($name){
         e.className ="selectedMaterialRow";
         //alert(e.querySelector('.itemNameTD').innerHTML);
         
-            var name = e.querySelector('.itemNameTD').innerHTML;
-            $.ajax({
-                url: './index.php?page=sklad', 
-                type: "POST",
-                dataType:'text', 
-                data: {'nameMat': name},
-                success: function(name){
-                    console.log("successfully");
-                }
-            }); 
+          $.ajax({
+            url:"sklad.php", //the page containing php script
+            type: "post", //request type,
+            dataType: 'json',
+           data: {selMatRow: "sel", selMatName: e.querySelector('.itemNameTD').innerHTML}
+            success:function(result){
+             console.log(result.abc);
+           }
+         });
         
         createGrafik(tableItems[childIndex+1]);
         selectedMaterialRow = e;
