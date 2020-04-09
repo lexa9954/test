@@ -127,7 +127,8 @@ function CreateTable($stmt){
                     <td>
                         <img class=\"img_mat\" src=\"sklad/img/",$row['ozm'],".jpg\" onerror=\"this.onerror=null;this.src='img/error_pictures/noImg.jpg';\">
                         
-                        <input type=\"button\" onclick=\"window.open(\"/Barmill_Portal/index.php?page=materialMore.php\" value=\"Подробно\"/>
+                        <input type=\"button\" onclick=\"moreMaterialInfo('",$row['name_mat'],"');\" value=\"Подробно\"/>
+                        
                     </td>
                     <td colspan=3>
                         <div class=\"chartWrapper\">
@@ -137,7 +138,7 @@ function CreateTable($stmt){
                             <canvas id=\"myChartAxis\" height=\"200\" width=\"0\"></canvas>
                         </div>
                     </td >
-                    <td id=\"matInfo\" class=\"notVisibleElements\">
+                    <td id=\"matInfo\" class=\"notVisibleElements\">",SelectMatVariables($row['name_mat']),"
                     </td>
                 </tr>
         ";
@@ -152,12 +153,6 @@ function ClickMore($name){
         echo $name;
     }
     
-//При нажатии на любой ряд материала
-$selectRow = $_POST['selectRow'];//Подтверждение нажатия на ряд материала
-$nameMat= $_POST['selMatName'];//Имя нажатого материала
-if($selectRow =="sel"){
-    SelectMatVariables($nameMat);//Вызов функции для запроса материала по выбранному имени материала
-}
     
 $matDateArr = array();
 $spisanieDobavlenieArr = array();
@@ -246,16 +241,6 @@ function SelectMatVariables($name){
         
         e.className ="selectedMaterialRow";
         //alert(e.querySelector('.itemNameTD').innerHTML);
-        
-          $.ajax({
-            url:"sklad.php", //the page containing php script
-            type: "post", //request type,
-            dataType: 'json',
-           data: {selMatRow: "sel", selMatName: e.querySelector('.itemNameTD').innerHTML}
-            success:function(result){
-             console.log(result.abc);
-           }
-         });
         
         createGrafik(tableItems[childIndex+1]);
         selectedMaterialRow = e;
@@ -365,6 +350,12 @@ function SelectMatVariables($name){
         });
     }
     
+    function moreMaterialInfo(nameMat){
+        console.log(nameMat);
+
+        var newwindow = window.open('/Barmill_Portal/index.php?page=materialMore',nameMat);
+        newwindow.document.write("wawaw");
+    }
     /*Применение выбираемой категории полю с id*/
     function SelectCat(a){
         var selCat = document.getElementById("selCatId");
